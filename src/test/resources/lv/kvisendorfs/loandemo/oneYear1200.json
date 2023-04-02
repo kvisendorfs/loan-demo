@@ -1,0 +1,86 @@
+[
+	{
+		"month": 1,
+		"base": 98.41,
+		"interest": 3.50,
+		"total": 101.91,
+		"remaining": 1101.59
+	},
+	{
+		"month": 2,
+		"base": 98.70,
+		"interest": 3.21,
+		"total": 101.91,
+		"remaining": 1002.89
+	},
+	{
+		"month": 3,
+		"base": 98.98,
+		"interest": 2.93,
+		"total": 101.91,
+		"remaining": 903.91
+	},
+	{
+		"month": 4,
+		"base": 99.27,
+		"interest": 2.64,
+		"total": 101.91,
+		"remaining": 804.64
+	},
+	{
+		"month": 5,
+		"base": 99.56,
+		"interest": 2.35,
+		"total": 101.91,
+		"remaining": 705.08
+	},
+	{
+		"month": 6,
+		"base": 99.85,
+		"interest": 2.06,
+		"total": 101.91,
+		"remaining": 605.23
+	},
+	{
+		"month": 7,
+		"base": 100.14,
+		"interest": 1.77,
+		"total": 101.91,
+		"remaining": 505.09
+	},
+	{
+		"month": 8,
+		"base": 100.44,
+		"interest": 1.47,
+		"total": 101.91,
+		"remaining": 404.65
+	},
+	{
+		"month": 9,
+		"base": 100.73,
+		"interest": 1.18,
+		"total": 101.91,
+		"remaining": 303.92
+	},
+	{
+		"month": 10,
+		"base": 101.02,
+		"interest": 0.89,
+		"total": 101.91,
+		"remaining": 202.90
+	},
+	{
+		"month": 11,
+		"base": 101.32,
+		"interest": 0.59,
+		"total": 101.91,
+		"remaining": 101.58
+	},
+	{
+		"month": 12,
+		"base": 101.61,
+		"interest": 0.30,
+		"total": 101.91,
+		"remaining": -0.03
+	}
+]
