@@ -6,7 +6,17 @@ plugins {
 
 group = 'lv.kvisendorfs'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+def projectJavaVersion = JavaLanguageVersion.of(17)
+java {
+	toolchain {
+		languageVersion = projectJavaVersion
+	}
+}
+tasks.withType(JavaExec).configureEach {
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = projectJavaVersion
+	}
+}
 
 configurations {
 	compileOnly {
@@ -19,9 +29,10 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation group: 'com.jakewharton.fliptables', name: 'fliptables', version: '1.1.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
