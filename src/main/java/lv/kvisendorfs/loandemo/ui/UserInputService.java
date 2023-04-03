@@ -41,28 +41,29 @@ public class UserInputService {
 	}
 
 	private BigDecimal getLoanAmount() {
-		System.out.println("Input loan amount:");
 		return getUserInput(
-				(in -> in.hasNextBigDecimal())
+				"Input loan amount:"
+				, (in -> in.hasNextBigDecimal())
 				, (in -> in.nextBigDecimal())
 				, validator::isLoanAmountValid,
 				validator.getLoanAmountValidationMessage());
 	}
 
 	private int getLoanTermInYears() {
-		System.out.println("Input loan term in years:");
 		return getUserInput(
-				(in -> in.hasNextInt())
+				"Input loan term in years:"
+				, (in -> in.hasNextInt())
 				, (in -> in.nextInt())
 				, validator::isLoanTermValid,
 				validator.getLoanTermValidationMessage());
 	}
 
-	private <T extends Number> T getUserInput(Predicate<Scanner> hasValidDataType, Function<Scanner, T> inputGetter,
+	private <T extends Number> T getUserInput(String inputPrompt, Predicate<Scanner> hasValidDataType, Function<Scanner, T> inputGetter,
 			Predicate<T> validator, String validationErrorMessage) {
 		Scanner in = clearBuffer();
 		T value = null;
 		while (value == null) {
+			System.out.println(inputPrompt);
 			if (hasValidDataType.test(in)) {
 				value = inputGetter.apply(in);
 				if (!validator.test(value)) {
