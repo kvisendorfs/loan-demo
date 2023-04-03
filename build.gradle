@@ -36,6 +36,7 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+	testImplementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 }
