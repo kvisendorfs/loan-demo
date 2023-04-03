@@ -1,12 +1,13 @@
 package lv.kvisendorfs.loandemo;
 
+import static lv.kvisendorfs.loandemo.LoanType.HOUSING;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,16 +33,29 @@ public class FixedInterestLoanCalculatorTest {
 
 	@BeforeEach
 	public void setUp() {
-		when(interestRateService.getInterestRateForLoanType(eq(LoanType.HOUSING))).thenReturn(new BigDecimal("0.035"));
+		when(interestRateService.getInterestRateForLoanType(eq(HOUSING))).thenReturn(new BigDecimal("0.035"));
+	}
+
+	@Test
+	public void testTwelvePaymentsWithLastPaymentOverStandard() {
+		var result = calculator.calculatePaymentPlan(HOUSING, BigDecimal.valueOf(1200L), 1);
+		var expected = loadFromResources("classpath:lv/kvisendorfs/loandemo/oneYear1200.json");
+		assertThat(result).containsExactlyElementsOf(expected);
 	}
 
 	@SneakyThrows
 	@Test
-	public void testSimpleCase() {
-		var result = calculator.calculatePaymentPlan(LoanType.HOUSING, BigDecimal.valueOf(1200L), 1);
-		var expected = mapper.readValue(ResourceUtils.getFile("classpath:lv/kvisendorfs/loandemo/oneYear1200.json"),
+	public void testTwelvePaymentsWithLastPaymentTwoCentsUnder() {
+		var result = calculator.calculatePaymentPlan(HOUSING, BigDecimal.valueOf(2000L), 1);
+		mapper.writer().writeValueAsString(result);
+		var expected = loadFromResources("classpath:lv/kvisendorfs/loandemo/oneYearTwoCentsUnder.json");
+		assertThat(result).containsExactlyElementsOf(expected);
+	}
+
+	@SneakyThrows
+	private List<MonthlyPayment> loadFromResources(String path) {
+		return mapper.readValue(ResourceUtils.getFile(path),
 				new TypeReference<List<MonthlyPayment>>() {
 				});
-		Assertions.assertThat(result).containsExactlyElementsOf(expected);
 	}
 }

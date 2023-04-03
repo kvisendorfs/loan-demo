@@ -28,15 +28,14 @@ public class FixedInterestLoanCalculator {
 		var annualInterestRate = interestRateService.getInterestRateForLoanType(loanType);
 		var monthlyInterestRate = getMonthlyInterestRate(annualInterestRate);
 		var loanTermInMonths = loanTermInYears * MONTHS_IN_YEAR;
-		var baseMonthlyPayment = getBaseMonthlyPayment(loanAmount, monthlyInterestRate, loanTermInMonths);
+		var monthlyPayment = getBaseMonthlyPayment(loanAmount, monthlyInterestRate, loanTermInMonths);
+		var remainingBalance = loanAmount;
 
-		BigDecimal remainingBalance = loanAmount;
 		var paymentPlan = new ArrayList<MonthlyPayment>(loanTermInMonths);
-		//TODO stream?
 		for (int month = 1; month <= loanTermInMonths; month++) {
-			//FIXME fix corner case with last payment
 			var monthlyInterest = scaleToMoney(remainingBalance.multiply(monthlyInterestRate));
-			var basePayment = scaleToMoney(baseMonthlyPayment.subtract(monthlyInterest));
+			var basePayment = calculateMonthlyBasePayment(loanTermInMonths, monthlyPayment, remainingBalance, month, monthlyInterest);
+
 			remainingBalance = scaleToMoney(remainingBalance.subtract(basePayment));
 
 			paymentPlan.add(
@@ -51,13 +50,26 @@ public class FixedInterestLoanCalculator {
 		return paymentPlan;
 	}
 
+	private BigDecimal calculateMonthlyBasePayment(int loanTermInMonths, BigDecimal monthlyPayment, BigDecimal remainingBalance, int month,
+			BigDecimal monthlyInterest) {
+		var basePayment = scaleToMoney(monthlyPayment.subtract(monthlyInterest));
+		if(isLastPayment(loanTermInMonths, month) && basePayment.compareTo(remainingBalance) != 0){
+			basePayment = remainingBalance;
+		}
+		return basePayment;
+	}
+
+	private boolean isLastPayment(int loanTermInMonths, int month) {
+		return month == loanTermInMonths;
+	}
+
 	private BigDecimal getMonthlyInterestRate(BigDecimal annualInterestRate) {
 		return annualInterestRate.divide(BigDecimal.valueOf(MONTHS_IN_YEAR), USED_MATH_CONTEXT);
 	}
 
 	private BigDecimal getBaseMonthlyPayment(BigDecimal loanAmount, BigDecimal monthlyInterestRate, int loanTermInMonths) {
 		return loanAmount.multiply(monthlyInterestRate)
-				.divide(ONE.subtract(ONE.add(monthlyInterestRate).pow(-loanTermInMonths, USED_MATH_CONTEXT)), ROUNDING_MODE);
+				.divide(ONE.subtract(ONE.add(monthlyInterestRate).pow(-loanTermInMonths, USED_MATH_CONTEXT)), 2, ROUNDING_MODE);
 	}
 
 	private BigDecimal scaleToMoney(BigDecimal value) {
