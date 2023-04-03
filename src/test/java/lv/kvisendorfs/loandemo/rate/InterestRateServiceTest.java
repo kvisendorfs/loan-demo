@@ -1,6 +1,6 @@
-package lv.kvisendorfs.loandemo;
+package lv.kvisendorfs.loandemo.rate;
 
-import static lv.kvisendorfs.loandemo.LoanType.HOUSING;
+import static lv.kvisendorfs.loandemo.loan.LoanType.HOUSING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

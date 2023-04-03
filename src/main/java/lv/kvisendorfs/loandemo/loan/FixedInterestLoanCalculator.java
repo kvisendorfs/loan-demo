@@ -1,4 +1,4 @@
-package lv.kvisendorfs.loandemo;
+package lv.kvisendorfs.loandemo.loan;
 
 import static java.math.BigDecimal.ONE;
 
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lv.kvisendorfs.loandemo.rate.InterestRateService;
 
 @Slf4j
 @Service
@@ -23,8 +24,12 @@ public class FixedInterestLoanCalculator {
 	private final static int MONTHS_IN_YEAR = 12;
 
 	private final InterestRateService interestRateService;
+	private final Validator validator;
 
 	public List<MonthlyPayment> calculatePaymentPlan(LoanType loanType, BigDecimal loanAmount, int loanTermInYears) {
+		validateLoanAmount(loanAmount);
+		validateLoanTerm(loanTermInYears);
+
 		var annualInterestRate = interestRateService.getInterestRateForLoanType(loanType);
 		var monthlyInterestRate = getMonthlyInterestRate(annualInterestRate);
 		var loanTermInMonths = loanTermInYears * MONTHS_IN_YEAR;
@@ -50,13 +55,36 @@ public class FixedInterestLoanCalculator {
 		return paymentPlan;
 	}
 
+	private void validateLoanAmount(BigDecimal loanAmount) {
+		if (!validator.isLoanAmountValid(loanAmount)) {
+			log.error("Invalid loan amount : {}", loanAmount);
+			throw new LoanArgumentException("Invalid loan amount");
+		}
+	}
+
+	private void validateLoanTerm(int loanTermInYears) {
+		if (!validator.isLoanTermValid(loanTermInYears)) {
+			log.error("Invalid loan term : {}", loanTermInYears);
+			throw new LoanArgumentException("Invalid loan term");
+		}
+	}
+
 	private BigDecimal calculateMonthlyBasePayment(int loanTermInMonths, BigDecimal monthlyPayment, BigDecimal remainingBalance, int month,
 			BigDecimal monthlyInterest) {
 		var basePayment = scaleToMoney(monthlyPayment.subtract(monthlyInterest));
-		if(isLastPayment(loanTermInMonths, month) && basePayment.compareTo(remainingBalance) != 0){
+		if (isLastPaymentTunable(loanTermInMonths, remainingBalance, month, basePayment)
+				|| isPaymentLargerThanRemainder(remainingBalance, basePayment)) {
 			basePayment = remainingBalance;
 		}
 		return basePayment;
+	}
+
+	private boolean isLastPaymentTunable(int loanTermInMonths, BigDecimal remainingBalance, int month, BigDecimal basePayment) {
+		return isLastPayment(loanTermInMonths, month) && basePayment.compareTo(remainingBalance) != 0;
+	}
+
+	private boolean isPaymentLargerThanRemainder(BigDecimal remainingBalance, BigDecimal basePayment) {
+		return basePayment.compareTo(remainingBalance) > 0;
 	}
 
 	private boolean isLastPayment(int loanTermInMonths, int month) {

@@ -1,4 +1,4 @@
-package lv.kvisendorfs.loandemo;
+package lv.kvisendorfs.loandemo.rate;
 
 public class NoInterestRateException extends RuntimeException {
 

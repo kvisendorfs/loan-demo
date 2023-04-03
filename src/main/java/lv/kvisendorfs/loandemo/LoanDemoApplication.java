@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lv.kvisendorfs.loandemo.ui.UserInputService;
 
 @Slf4j
 @SpringBootApplication
@@ -20,7 +21,7 @@ public class LoanDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		userInputService.comunicateWithUser();
+		userInputService.communicateWithUser();
 	}
 
 }

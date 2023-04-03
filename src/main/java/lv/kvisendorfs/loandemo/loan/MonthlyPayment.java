@@ -1,4 +1,4 @@
-package lv.kvisendorfs.loandemo;
+package lv.kvisendorfs.loandemo.loan;
 
 import java.math.BigDecimal;
 

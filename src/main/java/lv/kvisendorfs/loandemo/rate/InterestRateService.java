@@ -1,9 +1,11 @@
-package lv.kvisendorfs.loandemo;
+package lv.kvisendorfs.loandemo.rate;
 
 import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import lv.kvisendorfs.loandemo.loan.LoanType;
 
 @Service
 public class InterestRateService {
